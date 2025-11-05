@@ -63,6 +63,10 @@ The workflow defined in `.github/workflows/deploy.yml` runs on every push to the
 
 Once the workflow completes, the application becomes available through the load balancer DNS name output by Terraform.
 
+Health checks:
+- The Application Load Balancer is configured to probe path "/" and treat 200-399 as healthy.
+- The application exposes health endpoints at "/", "/health", and "/healthz" which return HTTP 200 with JSON {"status":"ok"}.
+
 ## 4. Ongoing maintenance
 
 - Re-run `terraform apply` whenever you need to modify infrastructure-level settings (for example CPU/memory, scaling, networking, or environment variables). Application-level changes should be handled by GitHub Actions deployments.

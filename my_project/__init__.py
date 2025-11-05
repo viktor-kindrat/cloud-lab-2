@@ -3,7 +3,7 @@ from http import HTTPStatus
 import secrets
 from typing import Dict, Any
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_utils import database_exists, create_database
 
@@ -40,6 +40,7 @@ def create_app(app_config: Dict[str, Any], additional_config: Dict[str, Any]) ->
     register_label_routes(app)
     register_music_routes(app)
     _init_swagger(app)
+    _init_health(app)
 
     return app
 
@@ -85,6 +86,26 @@ window.onload = () => {
             HTTPStatus.OK,
             {"Content-Type": "text/html; charset=utf-8"},
         )
+
+
+def _init_health(app: Flask) -> None:
+    """
+    Register lightweight health endpoints. No DB calls here.
+    - "/" is used by the ALB target group health check (200-399 is healthy)
+    - "/health" and "/healthz" are added for manual probes
+    """
+
+    @app.get("/")
+    def _root_health():
+        return jsonify(status="ok"), HTTPStatus.OK
+
+    @app.get("/health")
+    def _health():
+        return jsonify(status="ok"), HTTPStatus.OK
+
+    @app.get("/healthz")
+    def _healthz():
+        return jsonify(status="ok"), HTTPStatus.OK
 
 
 def _init_db(app: Flask) -> None:
