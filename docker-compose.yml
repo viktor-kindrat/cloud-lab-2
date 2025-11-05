@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: databases-lab-5-web
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "80:8080"
+    healthcheck:
+      test: [ "CMD", "true" ]
