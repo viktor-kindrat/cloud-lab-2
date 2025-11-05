@@ -66,6 +66,7 @@ Once the workflow completes, the application becomes available through the load 
 Health checks:
 - The Application Load Balancer is configured to probe path "/" and treat 200-399 as healthy.
 - The application exposes health endpoints at "/", "/health", and "/healthz" which return HTTP 200 with JSON {"status":"ok"}.
+- The Docker image defines a HEALTHCHECK that probes http://localhost:${APP_PORT:-8080}/health (falls back to 5000). This makes the container health visible to ECS when container health checks are enabled.
 
 ## 4. Ongoing maintenance
 
