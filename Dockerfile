@@ -9,9 +9,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 8080
+ENV FLASK_ENV=production
+ENV APP_PORT=5000
+EXPOSE 5000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD curl -fsS "http://localhost:${APP_PORT:-8080}/health" || curl -fsS "http://localhost:5000/health" || exit 1
+  CMD curl -fsS http://localhost:5000/health || exit 1
 
 CMD ["python", "app.py"]
